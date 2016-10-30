@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.vinaysshenoy.agrippa.view.widget.AgrippaPagerAdapter;
 import com.vinaysshenoy.agrippa.view.widget.AgrippaViewPager;
 
 /**
@@ -18,6 +19,12 @@ public final class Agrippa {
     @NonNull
     private final AgrippaViewPager viewPager;
 
+    private AgrippaPagerAdapter agrippaPagerAdapter;
+
+    private WizardStage curWizardStage;
+
+    private Bundle wizardContext;
+
     private Agrippa(Builder builder, ViewGroup addTo) {
         this.viewPager = new AgrippaViewPager(builder.context);
         viewPager.setLayoutParams(builder.layoutParams);
@@ -25,6 +32,17 @@ public final class Agrippa {
         if (addTo != null) {
             addTo.addView(viewPager);
         }
+
+        if(builder.savedInstanceState != null) {
+            wizardContext = builder.savedInstanceState.getBundle("wizard_context");
+        }
+        if (wizardContext == null) {
+            wizardContext = new Bundle();
+        }
+    }
+
+    public void saveState(Bundle outState) {
+        outState.putBundle("wizard_context", wizardContext);
     }
 
     public View view() {
