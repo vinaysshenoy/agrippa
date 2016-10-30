@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import com.vinaysshenoy.agrippa.view.widget.AgrippaPagerAdapter;
 import com.vinaysshenoy.agrippa.view.widget.AgrippaViewPager;
 
+import java.util.List;
+
 /**
  * Created by vinaysshenoy on 29/10/16.
  */
@@ -32,15 +34,15 @@ public final class Agrippa {
         this.viewPager = new AgrippaViewPager(builder.context);
         viewPager.setLayoutParams(builder.layoutParams);
 
-        if (addTo != null) {
-            addTo.addView(viewPager);
-        }
-
         if (builder.savedInstanceState != null) {
             wizardContext = builder.savedInstanceState.getBundle("wizard_context");
         }
         if (wizardContext == null) {
             wizardContext = new Bundle();
+        }
+
+        if (addTo != null) {
+            addTo.addView(viewPager);
         }
     }
 
@@ -62,30 +64,46 @@ public final class Agrippa {
 
         ViewGroup.LayoutParams layoutParams;
 
-        public Builder(Context context, FragmentManager fragmentManager) {
+        List<String> stages;
+
+        public Builder(@NonNull Context context, @NonNull FragmentManager fragmentManager) {
             this.context = context;
             this.fragmentManager = fragmentManager;
         }
 
-        public Builder(FragmentActivity activity) {
+        public Builder(@NonNull FragmentActivity activity) {
             this(activity, activity.getSupportFragmentManager());
         }
 
-        public Builder(Fragment fragment) {
+        public Builder(@NonNull Fragment fragment) {
             this(fragment.getContext(), fragment.getChildFragmentManager());
         }
 
-        public Builder setSavedInstanceState(Bundle savedInstanceState) {
+        public Builder setSavedInstanceState(@Nullable Bundle savedInstanceState) {
             this.savedInstanceState = savedInstanceState;
             return this;
         }
 
-        public Builder setLayoutParams(ViewGroup.LayoutParams layoutParams) {
+        public Builder setLayoutParams(@Nullable ViewGroup.LayoutParams layoutParams) {
             this.layoutParams = layoutParams;
             return this;
         }
 
+        public Builder setStages(@NonNull List<String> stages) {
+            this.stages = stages;
+            return this;
+        }
+
         public Agrippa create(@Nullable ViewGroup addTo) {
+
+            if(stages == null || stages.isEmpty()) {
+                throw new IllegalStateException("Stages cannot be null or empty. Has setStages() been called?");
+            }
+
+            if(layoutParams == null) {
+                layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            }
+
             return new Agrippa(this, addTo);
         }
     }
