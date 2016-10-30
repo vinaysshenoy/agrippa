@@ -1,6 +1,7 @@
 package com.vinaysshenoy.agrippa.sample;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -29,7 +30,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
 
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
         prevButton = (Button) findViewById(R.id.btn_prev);
         nextButton = (Button) findViewById(R.id.btn_next);
 
@@ -64,19 +69,13 @@ public class MainActivity extends AppCompatActivity {
                 updateUi();
             }
         });
+        updateUi();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         agrippa.saveState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        agrippa.onRestoreState();
-        updateUi();
     }
 
     private void updateUi() {

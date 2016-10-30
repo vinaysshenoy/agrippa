@@ -2,8 +2,6 @@ package com.vinaysshenoy.agrippa;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,8 +23,6 @@ import java.util.List;
 public final class Agrippa {
 
     private final AgrippaViewPager agrippaPager;
-
-    private final Handler handler;
 
     private final OnWizardCompleteListener listener;
 
@@ -50,7 +46,9 @@ public final class Agrippa {
             }
 
             curWizardStage = currentStage();
-            curWizardStage.onStageShown(wizardContext);
+            if(curWizardStage != null) {
+                curWizardStage.onStageShown(wizardContext);
+            }
         }
 
         @Override
@@ -63,20 +61,23 @@ public final class Agrippa {
         this.agrippaPager = new AgrippaViewPager(builder.context);
         agrippaPager.setId(R.id.agrippa_pager);
         agrippaPager.setLayoutParams(builder.layoutParams);
-
+        int currentIndex = 0;
         if (builder.savedInstanceState != null) {
             wizardContext = builder.savedInstanceState.getBundle("agp_wizard_context");
+            currentIndex = builder.savedInstanceState.getInt("agp_current_item", 0);
         }
         if (wizardContext == null) {
             wizardContext = new Bundle();
         }
 
         this.listener = onWizardCompleteListener;
+        agrippaPager.addOnPageChangeListener(pageChangeListener);
         agrippaPagerAdapter = new AgrippaPagerAdapter(builder.context, builder.fragmentManager);
+
         agrippaPager.setAdapter(agrippaPagerAdapter);
         setWizardStages(builder.stages);
+        agrippaPager.setCurrentItem(currentIndex, false);
 
-        handler = new Handler(Looper.getMainLooper());
         if (addTo != null) {
             addTo.addView(agrippaPager);
         }
@@ -88,16 +89,7 @@ public final class Agrippa {
 
     public void saveState(Bundle outState) {
         outState.putBundle("agp_wizard_context", wizardContext);
-    }
-
-    public void onRestoreState() {
-        agrippaPager.addOnPageChangeListener(pageChangeListener);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                pageChangeListener.onPageSelected(agrippaPager.getCurrentItem());
-            }
-        }, 100L);
+        outState.putInt("agp_current_item", currentStageIndex());
     }
 
     public View view() {
@@ -108,9 +100,7 @@ public final class Agrippa {
         curWizardStage = null;
         wizardContext.clear();
         agrippaPagerAdapter.setPages(stages);
-        if (stages.size() > 0) {
-            agrippaPager.setCurrentItem(0, false);
-        }
+        agrippaPager.setCurrentItem(0, false);
     }
 
     public int stageCount() {
