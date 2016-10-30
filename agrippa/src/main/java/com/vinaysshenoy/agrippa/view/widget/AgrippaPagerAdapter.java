@@ -51,7 +51,11 @@ public class AgrippaPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-        return Fragment.instantiate(context, stages.get(position));
+        final Fragment fragment = Fragment.instantiate(context, stages.get(position));
+        if (!(fragment instanceof WizardStage)) {
+            throw new IllegalStateException("All stages in the Wizard must extend WizardStage");
+        }
+        return fragment;
     }
 
     @Override
