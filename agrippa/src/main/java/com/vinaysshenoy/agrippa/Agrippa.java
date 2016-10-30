@@ -61,6 +61,7 @@ public final class Agrippa {
 
     private Agrippa(Builder builder, OnWizardCompleteListener onWizardCompleteListener, ViewGroup addTo) {
         this.agrippaPager = new AgrippaViewPager(builder.context);
+        agrippaPager.setId(R.id.agrippa_pager);
         agrippaPager.setLayoutParams(builder.layoutParams);
 
         if (builder.savedInstanceState != null) {

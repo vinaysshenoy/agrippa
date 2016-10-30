@@ -11,8 +11,39 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.vinaysshenoy.agrippa.sample.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/container_wizardActions"
+        style="?buttonBarStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"/>
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/btn_prev"
+            style="?buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/previous"
+            />
+
+        <Button
+            android:id="@+id/btn_next"
+            style="?buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/next"
+            />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/frame_wizard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/container_wizardActions"
+        android:layout_alignParentTop="true"
+        />
+
 </RelativeLayout>
