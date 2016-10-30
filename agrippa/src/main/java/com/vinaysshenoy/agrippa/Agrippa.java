@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -33,7 +36,7 @@ public final class Agrippa {
             addTo.addView(viewPager);
         }
 
-        if(builder.savedInstanceState != null) {
+        if (builder.savedInstanceState != null) {
             wizardContext = builder.savedInstanceState.getBundle("wizard_context");
         }
         if (wizardContext == null) {
@@ -53,12 +56,23 @@ public final class Agrippa {
 
         final Context context;
 
+        final FragmentManager fragmentManager;
+
         Bundle savedInstanceState;
 
         ViewGroup.LayoutParams layoutParams;
 
-        public Builder(Context context) {
+        public Builder(Context context, FragmentManager fragmentManager) {
             this.context = context;
+            this.fragmentManager = fragmentManager;
+        }
+
+        public Builder(FragmentActivity activity) {
+            this(activity, activity.getSupportFragmentManager());
+        }
+
+        public Builder(Fragment fragment) {
+            this(fragment.getContext(), fragment.getChildFragmentManager());
         }
 
         public Builder setSavedInstanceState(Bundle savedInstanceState) {
